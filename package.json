@@ -8,7 +8,7 @@
   ],
   "description": "React-Native LinkedIn, a simple LinkedIn login library for React-Native with WebView and Modal",
   "repository": "https://github.com/xcarpentier/react-native-linkedin.git",
-  "author": "Xavier Carpentier <contact@xaviercarpentier.com> (http://xaviercarpentier.com/)",
+  "author": "Xavier Carpentier <xcapetir@gmail.com> (https://xaviercarpentier.com/)",
   "bugs": {
     "url": "https://github.com/xcarpentier/react-native-linkedin/issues"
   },
