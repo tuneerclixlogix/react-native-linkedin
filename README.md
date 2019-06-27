@@ -173,3 +173,7 @@ Feel free to [contact me](mailto:contact@xaviercarpentier.com) or [create an iss
 [MIT](https://github.com/xcarpentier/react-native-linkedin/blob/master/LICENSE)
 
 > made with ♥
+
+## Hire an expert!
+Looking for a ReactNative freelance expert with more than 12 years experience? Contact me from my [website](https://xaviercarpentier.com)!
+
