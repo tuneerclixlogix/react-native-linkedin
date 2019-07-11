@@ -9,7 +9,6 @@ import LinkedInModal, {
   isErrorUrl,
   getAuthorizationUrl,
   getPayloadForToken,
-  injectedJavaScript,
   fetchToken,
   logError,
   onLoadStart,
@@ -108,12 +107,6 @@ it('getPayloadForToken', () => {
     'client_id=clientID&client_secret=clientSecret&' +
       'code=code&grant_type=authorization_code&' +
       'redirect_uri=https%3A%2F%2Fxaviercarpentier.com',
-  )
-})
-
-it('injectedJavaScript', () => {
-  expect(injectedJavaScript()).toBe(
-    'document.querySelector("input[type=text]").setAttribute("autocapitalize", "off")',
   )
 })
 

@@ -5,7 +5,6 @@
 
 import React from 'react'
 import {
-  WebView,
   TouchableOpacity,
   View,
   ViewPropTypes,
@@ -15,6 +14,7 @@ import {
   Image,
   // $DisableFlow
 } from 'react-native'
+import { WebView } from 'react-native-webview'
 import PropTypes from 'prop-types'
 import { pipe, evolve, propSatisfies, applySpec, propOr } from 'ramda'
 import { v4 } from 'uuid'
@@ -87,6 +87,13 @@ export const isErrorUrl: string => boolean = pipe(
   propSatisfies(error => typeof error !== 'undefined', 'error'),
 )
 
+export const injectedJavaScript = `
+  setTimeout(function() {
+    document.querySelector("input[type=text]").setAttribute("autocapitalize", "off");
+  }, 1);
+  true;
+`
+
 export const getAuthorizationUrl: Props => string = ({
   authState,
   clientID,
@@ -114,9 +121,6 @@ export const getPayloadForToken: (Props & { code: string }) => string = ({
     client_id: clientID,
     client_secret: clientSecret,
   })
-
-export const injectedJavaScript = () =>
-  'document.querySelector("input[type=text]").setAttribute("autocapitalize", "off")'
 
 export const fetchToken: string => Promise<LinkedInToken> = async payload => {
   const response = await fetch(ACCESS_TOKEN_URL, {
@@ -309,7 +313,7 @@ export default class LinkedInModal extends React.Component {
         startInLoadingState
         javaScriptEnabled
         domStorageEnabled
-        injectedJavaScript={injectedJavaScript()}
+        injectedJavaScript={injectedJavaScript}
       />
     )
   }
