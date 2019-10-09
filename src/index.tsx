@@ -1,8 +1,3 @@
-/**
- * @providesModule LinkedInModal
- * @flow
- */
-
 import React from 'react'
 import {
   TouchableOpacity,
@@ -20,7 +15,8 @@ import { pipe, evolve, propSatisfies, applySpec, propOr } from 'ramda'
 import { v4 } from 'uuid'
 import querystring from 'query-string'
 
-const AUTHORIZATION_URL: string = 'https://www.linkedin.com/oauth/v2/authorization'
+const AUTHORIZATION_URL: string =
+  'https://www.linkedin.com/oauth/v2/authorization'
 const ACCESS_TOKEN_URL: string = 'https://www.linkedin.com/oauth/v2/accessToken'
 
 export type LinkedInToken = {
@@ -232,7 +228,10 @@ export default class LinkedInModal extends React.Component {
   }
 
   componentWillUpdate(nextProps: Props, nextState: State) {
-    if (nextState.modalVisible !== this.state.modalVisible && nextState.modalVisible === true) {
+    if (
+      nextState.modalVisible !== this.state.modalVisible &&
+      nextState.modalVisible === true
+    ) {
       const authState = nextProps.authState || v4()
       this.setState(() => ({ raceCondition: false, authState }))
     }
@@ -262,7 +261,9 @@ export default class LinkedInModal extends React.Component {
   getAuthorizationUrl: void => string = () =>
     getAuthorizationUrl({ ...this.props, authState: this.state.authState })
 
-  getAccessToken: string => Promise<LinkedInToken | {}> = async (code: string) => {
+  getAccessToken: string => Promise<LinkedInToken | {}> = async (
+    code: string,
+  ) => {
     const { onError } = this.props
     const payload: string = getPayloadForToken({ ...this.props, code })
     const token = await fetchToken(payload)
@@ -292,12 +293,12 @@ export default class LinkedInModal extends React.Component {
     if (renderButton) return renderButton()
     return (
       <TouchableOpacity
-          accessibilityComponentType={'button'}
-          accessibilityTraits={['button']}
-          onPress={this.open}
-        >
-          <Text>{linkText}</Text>
-        </TouchableOpacity>
+        accessibilityComponentType={'button'}
+        accessibilityTraits={['button']}
+        onPress={this.open}
+      >
+        <Text>{linkText}</Text>
+      </TouchableOpacity>
     )
   }
 
@@ -328,10 +329,15 @@ export default class LinkedInModal extends React.Component {
 
   render() {
     const { modalVisible } = this.state
-    const { animationType, containerStyle, wrapperStyle, closeStyle } = this.props
+    const {
+      animationType,
+      containerStyle,
+      wrapperStyle,
+      closeStyle,
+    } = this.props
     return (
       <View>
-          {this.renderButton()}
+        {this.renderButton()}
         <Modal
           animationType={animationType}
           transparent
@@ -339,7 +345,9 @@ export default class LinkedInModal extends React.Component {
           onRequestClose={this.close}
         >
           <View style={[styles.constainer, containerStyle]}>
-            <View style={[styles.wrapper, wrapperStyle]}>{this.renderWebview()}</View>
+            <View style={[styles.wrapper, wrapperStyle]}>
+              {this.renderWebview()}
+            </View>
             <TouchableOpacity
               onPress={this.close}
               style={[styles.close, closeStyle]}

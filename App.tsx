@@ -1,11 +1,8 @@
-// @flow
 import React from 'react'
 import {
   StyleSheet,
   View,
-  Dimensions,
   Text,
-  Clipboard,
   Button,
   Image,
   ActivityIndicator,
@@ -14,7 +11,7 @@ import {
 
 import { CLIENT_ID, CLIENT_SECRET } from './config'
 
-import LinkedInModal from 'react-native-linkedin'
+import LinkedInModal from './src/'
 
 const styles = StyleSheet.create({
   container: {
@@ -86,12 +83,15 @@ export default class AppContainer extends React.Component {
       'email-address',
     ]
 
-    const response = await fetch(`${baseApi}~:(${params.join(',')})?format=json`, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + access_token,
+    const response = await fetch(
+      `${baseApi}~:(${params.join(',')})?format=json`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + access_token,
+        },
       },
-    })
+    )
     const payload = await response.json()
     this.setState({ ...payload, refreshing: false })
   }
@@ -111,30 +111,42 @@ export default class AppContainer extends React.Component {
   }
 
   render() {
-    const { emailAddress, pictureUrls, refreshing, firstName, lastName, headline } = this.state
+    const {
+      emailAddress,
+      pictureUrls,
+      refreshing,
+      firstName,
+      lastName,
+      headline,
+    } = this.state
     return (
       <View style={styles.container}>
-        {!emailAddress &&
-          !refreshing && (
-            <View style={styles.linkedInContainer}>
-              <LinkedInModal
-                ref={ref => {
-                  this.modal = ref
-                }}
-                clientID={CLIENT_ID}
-                clientSecret={CLIENT_SECRET}
-                redirectUri="https://xaviercarpentier.com"
-                onSuccess={data => this.getUser(data)}
-              />
-              <Button title="Open from external" onPress={() => this.modal.open()} />
-            </View>
-          )}
+        {!emailAddress && !refreshing && (
+          <View style={styles.linkedInContainer}>
+            <LinkedInModal
+              ref={ref => {
+                this.modal = ref
+              }}
+              clientID={CLIENT_ID}
+              clientSecret={CLIENT_SECRET}
+              redirectUri="https://xaviercarpentier.com"
+              onSuccess={data => this.getUser(data)}
+            />
+            <Button
+              title="Open from external"
+              onPress={() => this.modal.open()}
+            />
+          </View>
+        )}
 
         {refreshing && <ActivityIndicator size="large" />}
 
         {emailAddress && (
           <View style={styles.userContainer}>
-            <Image style={styles.picture} source={{ uri: pictureUrls.values[0] }} />
+            <Image
+              style={styles.picture}
+              source={{ uri: pictureUrls.values[0] }}
+            />
             {this.renderItem('Email', emailAddress)}
             {this.renderItem('First name', firstName)}
             {this.renderItem('Last name', lastName)}

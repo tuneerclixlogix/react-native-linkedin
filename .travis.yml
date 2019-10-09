@@ -1,11 +1,10 @@
 language: node_js
 node_js:
-- node
+  - node
 cache: yarn
-before_install:
-- npm install -g exp
 script:
-- yarn run lint
-- yarn run test
-- yarn run deploy
+  - yarn
+  - yarn lint
+  - yarn tsc
+  - yarn test
 sudo: false

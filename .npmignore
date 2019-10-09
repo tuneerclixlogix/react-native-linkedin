@@ -29,5 +29,13 @@ node_modules
 # from the current project
 .vscode
 jsconfig.json
-.babelrc
-example
+babel.config.js
+metro.config.js
+src
+app.json
+CODE_OF_CONDUCT.md
+typings.d.ts
+__tests__/
+.expo/
+.github/
+.vscode/
