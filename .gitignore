@@ -61,6 +61,6 @@ typings/
 jsconfig.json
 test-report.xml
 env.json
-lib
+lib/
 .expo/
 config.ts
