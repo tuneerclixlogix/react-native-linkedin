@@ -19,6 +19,7 @@ const AUTHORIZATION_URL: string =
 const ACCESS_TOKEN_URL: string = 'https://www.linkedin.com/oauth/v2/accessToken'
 
 export interface LinkedInToken {
+  authentication_code?: string
   access_token?: string
   expires_in?: number
 }
@@ -132,8 +133,8 @@ export const logError = (error: ErrorType) =>
 export const onLoadStart = async (
   url: string,
   authState: string,
-  onSuccess: any,
-  onError: any,
+  onSuccess: Props['onSuccess'],
+  onError: Props['onError'],
   close: any,
   getAccessToken: (token: string) => Promise<LinkedInToken>,
   shouldGetAccessToken?: boolean,
@@ -145,7 +146,7 @@ export const onLoadStart = async (
   } else {
     const { code, state } = getCodeAndStateFromUrl(url)
     if (!shouldGetAccessToken) {
-      onSuccess(code)
+      onSuccess({ authentication_code: code as string })
     } else if (state !== authState) {
       onError({
         type: 'state_not_match',
