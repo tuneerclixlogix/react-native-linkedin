@@ -39,3 +39,9 @@ __tests__/
 .expo/
 .github/
 .vscode/
+/scripts/*
+tsconfig.json
+tslint.json
+ISSUE_TEMPLATE.md
+.travis.yml
+App.tsx
