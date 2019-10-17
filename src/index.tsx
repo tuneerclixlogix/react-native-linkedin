@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import {
   TouchableOpacity,
   View,
@@ -7,7 +7,6 @@ import {
   Modal,
   StyleSheet,
   Image,
-  // $DisableFlow
 } from 'react-native'
 import { WebView } from 'react-native-webview'
 import PropTypes from 'prop-types'
@@ -19,68 +18,66 @@ const AUTHORIZATION_URL: string =
   'https://www.linkedin.com/oauth/v2/authorization'
 const ACCESS_TOKEN_URL: string = 'https://www.linkedin.com/oauth/v2/accessToken'
 
-export type LinkedInToken = {
-  access_token?: string,
-  expires_in?: number,
+export interface LinkedInToken {
+  access_token?: string
+  expires_in?: number
 }
 
-export type ErrorType = {
-  type?: string,
-  message?: string,
+export interface ErrorType {
+  type?: string
+  message?: string
 }
 
-type State = {
-  raceCondition: boolean,
-  modalVisible: boolean,
-  authState: string,
+interface State {
+  raceCondition: boolean
+  modalVisible: boolean
+  authState: string
 }
 
-/* eslint-disable */
-type Props = {
-  clientID: string,
-  clientSecret?: string,
-  redirectUri: string,
-  onSuccess: (LinkedInToken | {}) => void,
-  onError: ErrorType => void,
-  authState?: string,
-  onOpen?: void => void,
-  onClose?: void => void,
-  onSignIn?: void => void,
-  permissions: Array<string>,
-  linkText?: string,
-  renderButton?: void => any,
-  renderClose?: void => any,
-  containerStyle?: any,
-  wrapperStyle?: any,
-  closeStyle?: any,
-  animationType?: 'none' | 'fade' | 'slide',
-  shouldGetAccessToken: boolean,
+interface Props {
+  clientID: string
+  clientSecret: string
+  redirectUri: string
+  authState?: string
+  permissions: string[]
+  linkText?: string
+  containerStyle?: any
+  wrapperStyle?: any
+  closeStyle?: any
+  animationType?: 'none' | 'fade' | 'slide'
+  shouldGetAccessToken: boolean
+  renderButton?(): ReactNode
+  renderClose?(): ReactNode
+  onOpen?(): void
+  onClose?(): void
+  onSignIn?(): void
+  onSuccess(result: LinkedInToken): void
+  onError(error: ErrorType): void
 }
-/* eslint-enable */
 
 export const cleanUrlString = (state: string) => state.replace('#!', '')
 
-export const getCodeAndStateFromUrl: string => Object = pipe(
+export const getCodeAndStateFromUrl = pipe(
   querystring.extract,
   querystring.parse,
   evolve({ state: cleanUrlString }),
 )
 
-export const getErrorFromUrl: string => Object = pipe(
+export const getErrorFromUrl = pipe(
   querystring.extract,
   querystring.parse,
   evolve({ error_description: cleanUrlString }),
 )
 
-export const transformError: Object => Object = applySpec({
+export const transformError = applySpec<ErrorType>({
   type: propOr('', 'error'),
   message: propOr('', 'error_description'),
 })
 
-export const isErrorUrl: string => boolean = pipe(
+export const isErrorUrl = pipe(
   querystring.extract,
   querystring.parse,
-  propSatisfies(error => typeof error !== 'undefined', 'error'),
+  propSatisfies((error: any) => typeof error !== 'undefined', 'error'),
 )
 
 export const injectedJavaScript = `
@@ -90,26 +87,26 @@ export const injectedJavaScript = `
   true;
 `
 
-export const getAuthorizationUrl: Props => string = ({
+export const getAuthorizationUrl = ({
   authState,
   clientID,
   permissions,
   redirectUri,
-}) =>
+}: Partial<Props>) =>
   `${AUTHORIZATION_URL}?${querystring.stringify({
     response_type: 'code',
     client_id: clientID,
-    scope: permissions.join(' ').trim(),
+    scope: permissions!.join(' ').trim(),
     state: authState,
     redirect_uri: redirectUri,
   })}`
 
-export const getPayloadForToken: (Props & { code: string }) => string = ({
+export const getPayloadForToken = ({
   clientID,
   clientSecret,
   code,
   redirectUri,
-}) =>
+}: Partial<Props> & { code: string }) =>
   querystring.stringify({
     grant_type: 'authorization_code',
     code,
@@ -118,7 +115,7 @@ export const getPayloadForToken: (Props & { code: string }) => string = ({
     client_secret: clientSecret,
   })
 
-export const fetchToken: string => Promise<LinkedInToken> = async payload => {
+export const fetchToken = async (payload: any) => {
   const response = await fetch(ACCESS_TOKEN_URL, {
     method: 'POST',
     headers: {
@@ -130,16 +127,15 @@ export const fetchToken: string => Promise<LinkedInToken> = async payload => {
 }
 
 export const logError = (error: ErrorType) =>
-  // eslint-disable-next-line
   console.error(JSON.stringify(error, null, 2))
 
 export const onLoadStart = async (
   url: string,
   authState: string,
-  onSuccess: Function,
-  onError: Function,
-  close: Function,
-  getAccessToken: (token: string) => Promise<LinkedInToken | {}>,
+  onSuccess: any,
+  onError: any,
+  close: any,
+  getAccessToken: (token: string) => Promise<LinkedInToken>,
   shouldGetAccessToken: boolean,
 ) => {
   if (isErrorUrl(url)) {
@@ -156,14 +152,14 @@ export const onLoadStart = async (
         message: `state is not the same ${state}`,
       })
     } else {
-      const token: LinkedInToken | {} = await getAccessToken(code)
+      const token: LinkedInToken = await getAccessToken(code as string)
       onSuccess(token)
     }
   }
 }
 
 const styles = StyleSheet.create({
-  constainer: {
+  container: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     paddingVertical: 40,
@@ -190,7 +186,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class LinkedInModal extends React.Component {
+export default class LinkedInModal extends React.Component<Props, State> {
   static propTypes = {
     clientID: PropTypes.string.isRequired,
     clientSecret: PropTypes.string,
@@ -237,7 +233,7 @@ export default class LinkedInModal extends React.Component {
     }
   }
 
-  onNavigationStateChange = async ({ url }: Object) => {
+  onNavigationStateChange = async ({ url }: any) => {
     const { raceCondition } = this.state
     const { redirectUri, onError, shouldGetAccessToken } = this.props
 
@@ -245,7 +241,9 @@ export default class LinkedInModal extends React.Component {
       const { onSignIn, onSuccess } = this.props
       const { authState } = this.state
       this.setState({ modalVisible: false, raceCondition: true })
-      if (onSignIn) onSignIn()
+      if (onSignIn) {
+        onSignIn()
+      }
       await onLoadStart(
         url,
         authState,
@@ -258,12 +256,10 @@ export default class LinkedInModal extends React.Component {
     }
   }
 
-  getAuthorizationUrl: void => string = () =>
+  getAuthorizationUrl = () =>
     getAuthorizationUrl({ ...this.props, authState: this.state.authState })
 
-  getAccessToken: string => Promise<LinkedInToken | {}> = async (
-    code: string,
-  ) => {
+  getAccessToken = async (code: string) => {
     const { onError } = this.props
     const payload: string = getPayloadForToken({ ...this.props, code })
     const token = await fetchToken(payload)
@@ -274,23 +270,27 @@ export default class LinkedInModal extends React.Component {
     return token
   }
 
-  props: Props
-
   close = () => {
     const { onClose } = this.props
-    if (onClose) onClose()
+    if (onClose) {
+      onClose()
+    }
     this.setState({ modalVisible: false })
   }
 
   open = () => {
     const { onOpen } = this.props
-    if (onOpen) onOpen()
+    if (onOpen) {
+      onOpen()
+    }
     this.setState({ modalVisible: true })
   }
 
   renderButton = () => {
     const { renderButton, linkText } = this.props
-    if (renderButton) return renderButton()
+    if (renderButton) {
+      return renderButton()
+    }
     return (
       <TouchableOpacity
         accessibilityComponentType={'button'}
@@ -304,16 +304,19 @@ export default class LinkedInModal extends React.Component {
 
   renderClose = () => {
     const { renderClose } = this.props
-    if (renderClose) return renderClose()
+    if (renderClose) {
+      return renderClose()
+    }
     return (
-      // $DisableFlow
       <Image source={require('./assets/x-white.png')} resizeMode="contain" />
     )
   }
 
   renderWebview = () => {
     const { modalVisible } = this.state
-    if (!modalVisible) return null
+    if (!modalVisible) {
+      return null
+    }
 
     return (
       <WebView
@@ -344,7 +347,7 @@ export default class LinkedInModal extends React.Component {
           visible={modalVisible}
           onRequestClose={this.close}
         >
-          <View style={[styles.constainer, containerStyle]}>
+          <View style={[styles.container, containerStyle]}>
             <View style={[styles.wrapper, wrapperStyle]}>
               {this.renderWebview()}
             </View>

@@ -63,3 +63,4 @@ test-report.xml
 env.json
 lib
 .expo/
+config.ts

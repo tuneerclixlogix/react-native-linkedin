@@ -1,7 +1,7 @@
 {
   "name": "react-native-linkedin",
   "version": "2.0.0",
-  "main": "lib/index.js",
+  "main": "node_modules/expo/AppEntry.js",
   "files": [
     "lib/assets/x-white@2x.png",
     "lib/assets/x-white@3x.png"
@@ -34,15 +34,19 @@
   "dependencies": {
     "query-string": "6.8.3",
     "ramda": "0.26.1",
-    "uuid": "3.3.3"
+    "uuid": "3.3.3",
+    "react-native-webview": "7.0.5"
   },
   "devDependencies": {
     "@types/jest": "24.0.17",
     "@types/react": "16.9.4",
     "@types/react-native": "0.60.17",
+    "@types/uuid": "^3.4.4",
+    "@types/ramda": "^0.25.47",
     "babel-jest": "^22.0.0",
     "babel-preset-react-native": "^4.0.0",
     "babel-preset-expo": "^7.0.0",
+    "expo": "^35.0.0",
     "husky": "3.0.8",
     "json": "^9.0.6",
     "jest-expo": "^35.0.0",
@@ -52,6 +56,11 @@
     "tslint": "5.12.0",
     "tslint-config-prettier": "1.17.0",
     "typescript": "3.4.5"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*",
+    "react-native-webview": "*"
   },
   "jest": {
     "preset": "react-native",
@@ -68,9 +77,6 @@
     "testMatch": [
       "**/*.test.ts?(x)"
     ]
-  },
-  "peerDependencies": {
-    "react-native-webview": "^5.4.2"
   },
   "husky": {
     "hooks": {

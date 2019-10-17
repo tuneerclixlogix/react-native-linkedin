@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   userContainer: {
+    width: '100%',
     padding: 10,
     backgroundColor: '#fff',
     justifyContent: 'center',
@@ -34,8 +35,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   item: {
+    width: '100%',
     flexDirection: 'row',
     marginVertical: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   label: {
     marginRight: 10,
@@ -49,55 +53,53 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   labelContainer: {
-    flex: 0.7,
     alignItems: 'flex-end',
   },
   valueContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
 })
 
-export default class AppContainer extends React.Component {
+interface State {
+  access_token?: string
+  expires_in?: number
+  refreshing: boolean
+  localizedFirstName?: string
+  message?: string
+}
+export default class AppContainer extends React.Component<{}, State> {
   state = {
     access_token: undefined,
     expires_in: undefined,
     refreshing: false,
+    localizedFirstName: undefined,
+    message: undefined,
   }
 
-  constructor(props) {
+  modal: any
+
+  constructor(props: any) {
     super(props)
     StatusBar.setHidden(true)
   }
 
-  async getUser({ access_token }) {
+  getUser = async (data: any) => {
+    const { access_token } = data
     this.setState({ refreshing: true })
-    const baseApi = 'https://api.linkedin.com/v1/people/'
-    const qs = { format: 'json' }
-    const params = [
-      'first-name',
-      'last-name',
-      'picture-urls::(original)',
-      'headline',
-      'email-address',
-    ]
 
-    const response = await fetch(
-      `${baseApi}~:(${params.join(',')})?format=json`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + access_token,
-        },
+    const response = await fetch('https://api.linkedin.com/v2/me', {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + access_token,
       },
-    )
+    })
     const payload = await response.json()
     this.setState({ ...payload, refreshing: false })
   }
 
-  renderItem(label, value) {
-    return (
+  renderItem(label: string, value: string) {
+    return value ? (
       <View style={styles.item}>
         <View style={styles.labelContainer}>
           <Text style={styles.label}>{label}</Text>
@@ -107,18 +109,11 @@ export default class AppContainer extends React.Component {
           <Text style={styles.value}>{value}</Text>
         </View>
       </View>
-    )
+    ) : null
   }
 
   render() {
-    const {
-      emailAddress,
-      pictureUrls,
-      refreshing,
-      firstName,
-      lastName,
-      headline,
-    } = this.state
+    const { emailAddress, refreshing, localizedFirstName } = this.state
     return (
       <View style={styles.container}>
         {!emailAddress && !refreshing && (
@@ -130,7 +125,7 @@ export default class AppContainer extends React.Component {
               clientID={CLIENT_ID}
               clientSecret={CLIENT_SECRET}
               redirectUri="https://xaviercarpentier.com"
-              onSuccess={data => this.getUser(data)}
+              onSuccess={this.getUser}
             />
             <Button
               title="Open from external"
@@ -141,16 +136,9 @@ export default class AppContainer extends React.Component {
 
         {refreshing && <ActivityIndicator size="large" />}
 
-        {emailAddress && (
+        {localizedFirstName && (
           <View style={styles.userContainer}>
-            <Image
-              style={styles.picture}
-              source={{ uri: pictureUrls.values[0] }}
-            />
-            {this.renderItem('Email', emailAddress)}
-            {this.renderItem('First name', firstName)}
-            {this.renderItem('Last name', lastName)}
-            {this.renderItem('Headline', headline)}
+            {this.renderItem('Last name', localizedFirstName)}
           </View>
         )}
       </View>
