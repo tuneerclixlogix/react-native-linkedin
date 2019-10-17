@@ -80,7 +80,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "yarn run lint && yarn run flow && yarn run test"
+      "pre-push": "yarn lint && yarn tsc && yarn test"
     }
   }
 }
