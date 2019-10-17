@@ -36,7 +36,7 @@ interface State {
 
 interface Props {
   clientID: string
-  clientSecret: string
+  clientSecret?: string
   redirectUri: string
   authState?: string
   permissions: string[]
@@ -45,7 +45,7 @@ interface Props {
   wrapperStyle?: any
   closeStyle?: any
   animationType?: 'none' | 'fade' | 'slide'
-  shouldGetAccessToken: boolean
+  shouldGetAccessToken?: boolean
   renderButton?(): ReactNode
   renderClose?(): ReactNode
   onOpen?(): void
@@ -136,7 +136,7 @@ export const onLoadStart = async (
   onError: any,
   close: any,
   getAccessToken: (token: string) => Promise<LinkedInToken>,
-  shouldGetAccessToken: boolean,
+  shouldGetAccessToken?: boolean,
 ) => {
   if (isErrorUrl(url)) {
     const err = getErrorFromUrl(url)

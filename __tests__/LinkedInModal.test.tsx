@@ -16,6 +16,7 @@ import LinkedInModal, {
 
 jest.mock('WebView', () => 'WebView')
 
+// @ts-ignore
 global.fetch = jest.fn().mockImplementation(
   () =>
     new Promise(resolve => {
@@ -135,9 +136,9 @@ it('onLoadStart error', async () => {
     'http://url.com?error=error',
     '',
     () => {},
-    error => expect(error).toEqual({ type: 'error', message: '' }),
+    (error: any) => expect(error).toEqual({ type: 'error', message: '' }),
     () => {},
-    () => new Promise(resolve => resolve('')),
+    () => new Promise(resolve => resolve({})),
   )
 })
 
@@ -152,7 +153,7 @@ it('onLoadStart success', async () => {
       }),
     () => {},
     () => {},
-    () => new Promise(resolve => resolve('')),
+    () => new Promise(resolve => resolve({})),
     true,
   )
 })
@@ -168,6 +169,6 @@ it('onLoadStart error code & state', async () => {
         message: 'state is not the same 123',
       }),
     () => {},
-    () => new Promise(resolve => resolve('')),
+    () => new Promise(resolve => resolve({})),
   )
 })
