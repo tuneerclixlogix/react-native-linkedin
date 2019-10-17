@@ -11,7 +11,7 @@ import {
 
 import { CLIENT_ID, CLIENT_SECRET } from './config'
 
-import LinkedInModal from './src/'
+import LinkedInModal, { LinkedInToken } from './src/'
 
 const styles = StyleSheet.create({
   container: {
@@ -84,18 +84,22 @@ export default class AppContainer extends React.Component<{}, State> {
     StatusBar.setHidden(true)
   }
 
-  getUser = async (data: any) => {
-    const { access_token } = data
-    this.setState({ refreshing: true })
+  getUser = async (data: LinkedInToken) => {
+    const { access_token, authentication_code } = data
+    if (access_token) {
+      this.setState({ refreshing: true })
 
-    const response = await fetch('https://api.linkedin.com/v2/me', {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + access_token,
-      },
-    })
-    const payload = await response.json()
-    this.setState({ ...payload, refreshing: false })
+      const response = await fetch('https://api.linkedin.com/v2/me', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + access_token,
+        },
+      })
+      const payload = await response.json()
+      this.setState({ ...payload, refreshing: false })
+    } else {
+      alert(`authentication_code = ${authentication_code}`)
+    }
   }
 
   renderItem(label: string, value: string) {
@@ -113,10 +117,10 @@ export default class AppContainer extends React.Component<{}, State> {
   }
 
   render() {
-    const { emailAddress, refreshing, localizedFirstName } = this.state
+    const { refreshing, localizedFirstName } = this.state
     return (
       <View style={styles.container}>
-        {!emailAddress && !refreshing && (
+        {!refreshing && (
           <View style={styles.linkedInContainer}>
             <LinkedInModal
               ref={ref => {
@@ -124,6 +128,7 @@ export default class AppContainer extends React.Component<{}, State> {
               }}
               clientID={CLIENT_ID}
               clientSecret={CLIENT_SECRET}
+              shouldGetAccessToken={false}
               redirectUri="https://xaviercarpentier.com"
               onSuccess={this.getUser}
             />
