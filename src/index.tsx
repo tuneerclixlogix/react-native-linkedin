@@ -10,10 +10,9 @@ import {
 } from 'react-native'
 import { WebView } from 'react-native-webview'
 import PropTypes from 'prop-types'
-import { pipe, evolve, propSatisfies, applySpec, propOr } from 'ramda'
+import { pipe, evolve, propSatisfies, applySpec, propOr, add } from 'ramda'
 import { v4 } from 'uuid'
 import querystring from 'query-string'
-import add from 'ramda/es/add'
 
 const AUTHORIZATION_URL: string =
   'https://www.linkedin.com/oauth/v2/authorization'
