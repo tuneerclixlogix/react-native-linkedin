@@ -13,10 +13,12 @@ import PropTypes from 'prop-types'
 import { pipe, evolve, propSatisfies, applySpec, propOr } from 'ramda'
 import { v4 } from 'uuid'
 import querystring from 'query-string'
+import add from 'ramda/es/add'
 
 const AUTHORIZATION_URL: string =
   'https://www.linkedin.com/oauth/v2/authorization'
 const ACCESS_TOKEN_URL: string = 'https://www.linkedin.com/oauth/v2/accessToken'
+const LOGOUT_URL: string = 'https://www.linkedin.com/m/logout'
 
 export interface LinkedInToken {
   authentication_code?: string
@@ -33,6 +35,7 @@ interface State {
   raceCondition: boolean
   modalVisible: boolean
   authState: string
+  logout: boolean
 }
 
 interface Props {
@@ -158,7 +161,7 @@ export const onLoadStart = async (
     }
   }
 }
-
+const closeSize = { width: 24, height: 24 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -179,11 +182,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: 'rgba(0, 0, 0, 0.4)',
-    width: 24,
-    height: 24,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    ...closeSize,
   },
 })
 
@@ -222,6 +224,7 @@ export default class LinkedInModal extends React.Component<Props, State> {
     raceCondition: false,
     modalVisible: false,
     authState: v4(),
+    logout: false,
   }
 
   componentWillUpdate(nextProps: Props, nextState: State) {
@@ -287,6 +290,15 @@ export default class LinkedInModal extends React.Component<Props, State> {
     this.setState({ modalVisible: true })
   }
 
+  logoutAsync = () =>
+    new Promise(resolve => {
+      this.setState({ logout: true })
+      setTimeout(() => {
+        this.setState({ logout: false })
+        resolve()
+      }, 3000)
+    })
+
   renderButton = () => {
     const { renderButton, linkText } = this.props
     if (renderButton) {
@@ -309,7 +321,13 @@ export default class LinkedInModal extends React.Component<Props, State> {
       return renderClose()
     }
     return (
-      <Image source={require('./assets/x-white.png')} resizeMode="contain" />
+      <Image
+        source={require('./assets/x-white.png')}
+        resizeMode="contain"
+        style={{
+          ...evolve({ width: add(-8), height: add(-8) }, closeSize),
+        }}
+      />
     )
   }
 
@@ -327,12 +345,13 @@ export default class LinkedInModal extends React.Component<Props, State> {
         javaScriptEnabled
         domStorageEnabled
         injectedJavaScript={injectedJavaScript}
+        sharedCookiesEnabled
       />
     )
   }
 
   render() {
-    const { modalVisible } = this.state
+    const { modalVisible, logout } = this.state
     const {
       animationType,
       containerStyle,
@@ -362,6 +381,17 @@ export default class LinkedInModal extends React.Component<Props, State> {
             </TouchableOpacity>
           </View>
         </Modal>
+        {logout && (
+          <View style={{ width: 1, height: 1 }}>
+            <WebView
+              source={{ uri: LOGOUT_URL }}
+              javaScriptEnabled
+              domStorageEnabled
+              sharedCookiesEnabled
+              onLoadEnd={() => this.setState({ logout: false })}
+            />
+          </View>
+        )}
       </View>
     )
   }

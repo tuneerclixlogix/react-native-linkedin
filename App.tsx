@@ -4,7 +4,6 @@ import {
   View,
   Text,
   Button,
-  Image,
   ActivityIndicator,
   StatusBar,
 } from 'react-native'
@@ -77,7 +76,7 @@ export default class AppContainer extends React.Component<{}, State> {
     message: undefined,
   }
 
-  modal: any
+  modal = React.createRef<LinkedInModal>()
 
   constructor(props: any) {
     super(props)
@@ -86,7 +85,7 @@ export default class AppContainer extends React.Component<{}, State> {
 
   getUser = async (data: LinkedInToken) => {
     const { access_token, authentication_code } = data
-    if (access_token) {
+    if (!authentication_code) {
       this.setState({ refreshing: true })
 
       const response = await fetch('https://api.linkedin.com/v2/me', {
@@ -116,35 +115,42 @@ export default class AppContainer extends React.Component<{}, State> {
     ) : null
   }
 
+  signOut = () => {
+    this.setState({ refreshing: true })
+    this.modal.current
+      .logoutAsync()
+      .then(() =>
+        this.setState({ localizedFirstName: undefined, refreshing: false }),
+      )
+  }
+
   render() {
     const { refreshing, localizedFirstName } = this.state
     return (
       <View style={styles.container}>
-        {!refreshing && (
-          <View style={styles.linkedInContainer}>
-            <LinkedInModal
-              ref={ref => {
-                this.modal = ref
-              }}
-              clientID={CLIENT_ID}
-              clientSecret={CLIENT_SECRET}
-              shouldGetAccessToken={false}
-              redirectUri="https://xaviercarpentier.com"
-              onSuccess={this.getUser}
-            />
-            <Button
-              title="Open from external"
-              onPress={() => this.modal.open()}
-            />
-          </View>
-        )}
+        <View style={styles.linkedInContainer}>
+          <LinkedInModal
+            ref={this.modal}
+            clientID={CLIENT_ID}
+            clientSecret={CLIENT_SECRET}
+            redirectUri="https://xaviercarpentier.com"
+            onSuccess={this.getUser}
+          />
+          <Button
+            title="Open from external"
+            onPress={() => this.modal.current.open()}
+          />
+        </View>
 
         {refreshing && <ActivityIndicator size="large" />}
 
         {localizedFirstName && (
-          <View style={styles.userContainer}>
-            {this.renderItem('Last name', localizedFirstName)}
-          </View>
+          <>
+            <View style={styles.userContainer}>
+              {this.renderItem('Last name', localizedFirstName)}
+            </View>
+            <Button title="Log Out" onPress={this.signOut} />
+          </>
         )}
       </View>
     )

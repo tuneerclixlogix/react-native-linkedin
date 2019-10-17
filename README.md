@@ -39,17 +39,54 @@ Please note that you should give your linkedin client id but not your secret key
 You should be aware that key can be found if you store it directly to your code.
 **I strongly recommend to not declare client secret key on your code but found a way to keep it secret**
 
-[> Related issue](https://github.com/xcarpentier/react-native-linkedin/issues/59)
-[> LinkedIn Documentation](https://docs.microsoft.com/en-us/linkedin/shared/api-guide/best-practices/
-secure-applications?context=linkedin/context#api-key-and-secret-key)
+- [> Related issue](https://github.com/xcarpentier/react-native-linkedin/issues/59)
+- [> LinkedIn Documentation](https://docs.microsoft.com/en-us/linkedin/shared/api-guide/best-practices/secure-applications?context=linkedin/context#api-key-and-secret-key)
 
 ```tsx
   <LinkedInModal
-    clientID="[ Your client id from https://www.linkedin.com/developer/apps ]"
+    shouldGetAccessToken={false}
     clientSecret={null}
+    clientID="[ Your client id from https://www.linkedin.com/developer/apps ]"
     redirectUri="[ Your redirect uri set into https://www.linkedin.com/developer/apps ]"
     onSuccess={{ authentication_code } => console.log(`Post this ${authentication_code} to your server.`)}
   />
+```
+
+### Example
+
+```JavaScript
+// See ./App.tsx file for details
+import React from 'react'
+import { StyleSheet, View } from 'react-native'
+
+import LinkedInModal from 'react-native-linkedin'
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+})
+
+export default class AppContainer extends React.Component {
+  linkedRef = React.createRef<LinkedInModal>()
+  render() {
+    return (
+      <View style={styles.container}>
+        <LinkedInModal
+          ref={this.linkedRef}
+          clientID="[ Your client id from https://www.linkedin.com/developer/apps ]"
+          clientSecret="[ Your client secret from https://www.linkedin.com/developer/apps ]"
+          redirectUri="[ Your redirect uri set into https://www.linkedin.com/developer/apps ]"
+          onSuccess={token => console.log(token)}
+        />
+        <Button title="Log Out" onPress={this.linkedRef.current.logoutAsync()} />
+      </View>
+    )
+  }
+}
 ```
 
 ### Props
@@ -74,40 +111,6 @@ secure-applications?context=linkedin/context#api-key-and-secret-key)
 | closeStyle               | ViewPropTypes.style           | optional                                                                              |                                     | Customize close style                                                                                                                                                                                    |
 | animationType            | Modal.propTypes.animationType | optional                                                                              | `fade`                              | Customize animationType style: 'none', 'slide' or 'fade'                                                                                                                                                 |
 | **shouldGetAccessToken** | bool                          | optional                                                                              | `true`                              | Set to false to receive the 'authorization code' rather then the 'access token'                                                                                                                          |
-
-### Example
-
-```JavaScript
-// See ./example folder for details
-import React from 'react'
-import { StyleSheet, View } from 'react-native'
-
-import LinkedInModal from 'react-native-linkedin'
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-})
-
-export default class AppContainer extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <LinkedInModal
-          clientID="[ Your client id from https://www.linkedin.com/developer/apps ]"
-          clientSecret="[ Your client secret from https://www.linkedin.com/developer/apps ]"
-          redirectUri="[ Your redirect uri set into https://www.linkedin.com/developer/apps ]"
-          onSuccess={token => console.log(token)}
-        />
-      </View>
-    )
-  }
-}
-```
 
 ## Contribution
 
