@@ -31,8 +31,6 @@ Simple <strong>LinkedIn</strong> login library for <strong>React-Native</strong>
 $ yarn add react-native-linkedin
 ```
 
-## Documentation
-
 ## Security
 
 Please note that you should give your linkedin client id but not your secret key to this component.
