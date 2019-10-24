@@ -50,7 +50,7 @@ You should be aware that key can be found if you store it directly to your code.
   />
 ```
 
-### Example
+## Example
 
 ```JavaScript
 // See ./App.tsx file for details
@@ -87,7 +87,7 @@ export default class AppContainer extends React.Component {
 }
 ```
 
-### Props
+## Props
 
 | Name                     | Type                          | Required                                                                              | Default                             | Description                                                                                                                                                                                              |
 | ------------------------ | ----------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -112,7 +112,7 @@ export default class AppContainer extends React.Component {
 
 ## Contribution
 
-- [@xcapentier](mailto:contact@xaviercarpentier.com) The main author.
+- [@xcarpentier](mailto:contact@xaviercarpentier.com) The main author.
 
 **PRs are welcome!**
 
