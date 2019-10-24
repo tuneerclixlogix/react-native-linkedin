@@ -226,7 +226,7 @@ export default class LinkedInModal extends React.Component<Props, State> {
     logout: false,
   }
 
-  componentWillUpdate(nextProps: Props, nextState: State) {
+  componentDidUpdate(nextProps: Props, nextState: State) {
     if (
       nextState.modalVisible !== this.state.modalVisible &&
       nextState.modalVisible === true
