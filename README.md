@@ -109,6 +109,7 @@ export default class AppContainer extends React.Component {
 | closeStyle               | ViewPropTypes.style           | optional                                                                              |                                     | Customize close style                                                                                                                                                                                    |
 | animationType            | Modal.propTypes.animationType | optional                                                                              | `fade`                              | Customize animationType style: 'none', 'slide' or 'fade'                                                                                                                                                 |
 | **shouldGetAccessToken** | bool                          | optional                                                                              | `true`                              | Set to false to receive the 'authorization code' rather then the 'access token'                                                                                                                          |
+| areaTouchText | object      | optional       | `{top: 20, bottom: 20, left: 50, right: 50}`          | Set values for to increase the text touch area          |
 
 ## Contribution
 

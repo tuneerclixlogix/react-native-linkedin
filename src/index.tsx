@@ -48,6 +48,7 @@ interface Props {
   wrapperStyle?: any
   closeStyle?: any
   animationType?: 'none' | 'fade' | 'slide'
+  areaTouchText: object
   shouldGetAccessToken?: boolean
   renderButton?(): ReactNode
   renderClose?(): ReactNode
@@ -201,6 +202,7 @@ export default class LinkedInModal extends React.Component<Props, State> {
     onClose: PropTypes.func,
     onSignIn: PropTypes.func,
     linkText: PropTypes.string,
+    areaTouchText: PropTypes.object,
     renderButton: PropTypes.func,
     renderClose: PropTypes.func,
     containerStyle: ViewPropTypes.style,
@@ -213,6 +215,7 @@ export default class LinkedInModal extends React.Component<Props, State> {
     onError: logError,
     permissions: ['r_liteprofile', 'r_emailaddress'],
     linkText: 'Login with LinkedIn',
+    areaTouchText: {top: 20, bottom: 20, left: 50, right: 50},
     animationType: 'fade',
     containerStyle: StyleSheet.create({}),
     wrapperStyle: StyleSheet.create({}),
@@ -299,7 +302,7 @@ export default class LinkedInModal extends React.Component<Props, State> {
     })
 
   renderButton = () => {
-    const { renderButton, linkText } = this.props
+    const { renderButton, linkText, areaTouchText } = this.props
     if (renderButton) {
       return renderButton()
     }
@@ -308,6 +311,7 @@ export default class LinkedInModal extends React.Component<Props, State> {
         accessibilityComponentType={'button'}
         accessibilityTraits={['button']}
         onPress={this.open}
+        hitSlop={areaTouchText}
       >
         <Text>{linkText}</Text>
       </TouchableOpacity>
