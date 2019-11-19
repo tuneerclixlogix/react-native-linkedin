@@ -49,10 +49,10 @@ interface Props {
   closeStyle?: any
   animationType?: 'none' | 'fade' | 'slide'
   areaTouchText: {
-    top: number, 
-    bottom: number, 
-    left: number, 
-    right: number
+    top?: number, 
+    bottom?: number, 
+    left?: number, 
+    right?: number
   }
   shouldGetAccessToken?: boolean
   renderButton?(): ReactNode
