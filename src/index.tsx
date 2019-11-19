@@ -48,7 +48,12 @@ interface Props {
   wrapperStyle?: any
   closeStyle?: any
   animationType?: 'none' | 'fade' | 'slide'
-  areaTouchText: object
+  areaTouchText: {
+    top: number, 
+    bottom: number, 
+    left: number, 
+    right: number
+  }
   shouldGetAccessToken?: boolean
   renderButton?(): ReactNode
   renderClose?(): ReactNode

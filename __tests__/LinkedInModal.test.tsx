@@ -39,7 +39,7 @@ it('<LinkedInModal /> render correctly', () => {
         clientSecret="clientSecret"
         redirectUri="https://xaviercarpentier.fr"
         authState="authState"
-        areaTouchText={{}}
+        areaTouchText={{bottom: 10, left: 10, right: 10, top: 10}}
       />,
     )
     .toJSON()
