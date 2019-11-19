@@ -1,5 +1,5 @@
 {
-  "name": "react-native-linkedin-temporary-version",
+  "name": "react-native-linkedin",
   "version": "2.1.1",
   "main": "node_modules/expo/AppEntry.js",
   "types": "lib/index.d.ts",
