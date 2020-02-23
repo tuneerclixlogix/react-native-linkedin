@@ -365,6 +365,7 @@ export default class LinkedInModal extends React.Component<Props, State> {
         domStorageEnabled
         injectedJavaScript={injectedJavaScript}
         sharedCookiesEnabled
+        incognito={true}
       />
     )
   }
